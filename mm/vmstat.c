@@ -719,6 +719,9 @@ const char * const vmstat_text[] = {
 #ifdef CONFIG_NUMA
 	"numa_hit",
 	"numa_miss",
+#ifdef CONFIG_UKSM
+	"nr_uksm_zero_pages",
+#endif
 	"numa_foreign",
 	"numa_interleave",
 	"numa_local",
