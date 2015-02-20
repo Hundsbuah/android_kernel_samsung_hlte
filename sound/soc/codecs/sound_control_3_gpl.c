@@ -18,14 +18,11 @@
 #include <linux/module.h>
 #include <linux/kobject.h>
 #include <linux/sysfs.h>
-#include <linux/kallsyms.h>
 #include <linux/mfd/wcd9xxx/core.h>
 #include <linux/mfd/wcd9xxx/wcd9320_registers.h>
 
 #define SOUND_CONTROL_MAJOR_VERSION	3
-#define SOUND_CONTROL_MINOR_VERSION	5
-
-#define REG_SZ	21
+#define SOUND_CONTROL_MINOR_VERSION	6
 
 extern struct snd_soc_codec *fauxsound_codec_ptr;
 extern int wcd9xxx_hw_revision;
@@ -33,14 +30,14 @@ extern int wcd9xxx_hw_revision;
 static int snd_ctrl_locked = 0;
 static int snd_rec_ctrl_locked = 0;
 
-unsigned int taiko_read(struct snd_soc_codec *codec, unsigned int reg);
-int taiko_write(struct snd_soc_codec *codec, unsigned int reg,
+extern unsigned int taiko_read(struct snd_soc_codec *codec, unsigned int reg);
+extern int taiko_write(struct snd_soc_codec *codec, unsigned int reg,
 		unsigned int value);
 
-
+#define REG_SZ	25
 static unsigned int cached_regs[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			    0 };
+			    0, 0, 0, 0, 0 };
 
 static unsigned int *cache_select(unsigned int reg)
 {
@@ -104,6 +101,18 @@ static unsigned int *cache_select(unsigned int reg)
                 case TAIKO_A_CDC_TX10_VOL_CTL_GAIN:
 			out = &cached_regs[20];
 			break;
+		case TAIKO_A_RX_LINE_1_GAIN:
+			out = &cached_regs[21];
+			break;
+		case TAIKO_A_RX_LINE_2_GAIN:
+			out = &cached_regs[22];
+			break;
+		case TAIKO_A_RX_LINE_3_GAIN:
+			out = &cached_regs[23];
+			break;
+		case TAIKO_A_RX_LINE_4_GAIN:
+			out = &cached_regs[24];
+			break;
         }
 	return out;
 }
@@ -145,6 +154,10 @@ int snd_hax_reg_access(unsigned int reg)
 		case TAIKO_A_CDC_RX5_VOL_CTL_B2_CTL:
 		case TAIKO_A_CDC_RX6_VOL_CTL_B2_CTL:
 		case TAIKO_A_CDC_RX7_VOL_CTL_B2_CTL:
+		case TAIKO_A_RX_LINE_1_GAIN:
+		case TAIKO_A_RX_LINE_2_GAIN:
+		case TAIKO_A_RX_LINE_3_GAIN:
+		case TAIKO_A_RX_LINE_4_GAIN:
 			if (snd_ctrl_locked > 0)
 				ret = 0;
 			break;
@@ -186,7 +199,7 @@ static ssize_t cam_mic_gain_show(struct kobject *kobj,
 {
         return sprintf(buf, "%u\n",
 		taiko_read(fauxsound_codec_ptr,
-			TAIKO_A_CDC_TX6_VOL_CTL_GAIN));
+			TAIKO_A_CDC_TX3_VOL_CTL_GAIN));
 
 }
 
@@ -199,7 +212,7 @@ static ssize_t cam_mic_gain_store(struct kobject *kobj,
 
 	if (calc_checksum(lval, 0, chksum)) {
 		taiko_write(fauxsound_codec_ptr,
-			TAIKO_A_CDC_TX6_VOL_CTL_GAIN, lval);
+			TAIKO_A_CDC_TX3_VOL_CTL_GAIN, lval);
 	}
 	return count;
 }
@@ -209,7 +222,7 @@ static ssize_t mic_gain_show(struct kobject *kobj,
 {
 	return sprintf(buf, "%u\n",
 		taiko_read(fauxsound_codec_ptr,
-			TAIKO_A_CDC_TX7_VOL_CTL_GAIN));
+			TAIKO_A_CDC_TX2_VOL_CTL_GAIN));
 }
 
 static ssize_t mic_gain_store(struct kobject *kobj,
@@ -221,7 +234,7 @@ static ssize_t mic_gain_store(struct kobject *kobj,
 
 	if (calc_checksum(lval, 0, chksum)) {
 		taiko_write(fauxsound_codec_ptr,
-			TAIKO_A_CDC_TX7_VOL_CTL_GAIN, lval);
+			TAIKO_A_CDC_TX2_VOL_CTL_GAIN, lval);
 	}
 	return count;
 

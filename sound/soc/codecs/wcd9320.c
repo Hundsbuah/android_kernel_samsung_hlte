@@ -4752,7 +4752,7 @@ int taiko_write(struct snd_soc_codec *codec, unsigned int reg,
 {
 	int ret;
 #ifdef CONFIG_SOUND_CONTROL_HAX_3_GPL
-	int val;
+	unsigned int val;
 #endif
 
 	struct wcd9xxx *wcd9xxx = codec->control_data;
