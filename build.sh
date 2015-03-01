@@ -2,7 +2,7 @@
 
 export SUBARCH=arm
 export ARCH=arm
-export CROSS_COMPILE=/home/lowi/Daten/KERNEL/git/linaro_toolchains_2014/arm-cortex_a15-linux-gnueabihf-linaro_4.9.3-2014.12/bin/arm-cortex_a15-linux-gnueabihf-
+export CROSS_COMPILE=/home/lowi/Daten/KERNEL/git/linaro_toolchains_2014/arm-cortex_a15-linux-gnueabihf-linaro_4.9.3-2015.02/bin/arm-cortex_a15-linux-gnueabihf-
 
 make -j10
 
